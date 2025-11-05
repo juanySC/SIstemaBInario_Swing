@@ -136,7 +136,7 @@ public class Main {
     // Mostrar mensajes múltiples (limpia area debajo del menú y escribe)
     private static void writeLines(Screen screen, TextGraphics tg, int startRow, List<String> lines) {
         // Limpiar varias líneas
-        for (int r = 0; r < 10; r++) {
+        for (int r = 0; r < 12; r++) {
             tg.putString(1, startRow + r, " ".repeat(Math.max(1, SCREEN_WIDTH)));
         }
         for (int i = 0; i < lines.size(); i++) {
@@ -309,7 +309,7 @@ public class Main {
             }
         }
 
-        // Mostrar resultado final
+        // Mostrar resultado final (pantalla y cuadro modal)
         TiempoBinario resultado = segundosATiempoBinario(resultadoSegundos);
         int hDec = Integer.parseInt(resultado.hora, 2);
         int mDec = Integer.parseInt(resultado.minuto, 2);
@@ -322,6 +322,22 @@ public class Main {
         out.add(String.format("Decimal: %02d:%02d:%02d", hDec, mDec, sDec));
         out.add("====================================");
         writeLines(screen, tg, promptRow + 4, out);
+
+        // Mostrar resultado también en un dialog para asegurar visibilidad
+        StringBuilder popup = new StringBuilder();
+        popup.append("Resultado final:\n");
+        popup.append(String.format("Binario: %s:%s:%s\n", resultado.hora, resultado.minuto, resultado.segundo));
+        popup.append(String.format("Decimal: %02d:%02d:%02d\n", hDec, mDec, sDec));
+        JOptionPane.showMessageDialog(null, popup.toString(), "Resultado", JOptionPane.INFORMATION_MESSAGE);
+
+        // Pregunta si desea salir o volver al menú
+        int sel = JOptionPane.showConfirmDialog(null, "¿Deseas salir del programa? (Sí = salir, No = volver al menú)", "Salir?", JOptionPane.YES_NO_OPTION);
+        if (sel == JOptionPane.YES_OPTION) {
+            // cerrar pantalla y salir
+            try { screen.stopScreen(); } catch (IOException ignored) {}
+            System.exit(0);
+        }
+        // si NO, volvemos al menú (simplemente regresamos)
     }
 
     // ========== OPCIÓN 2 (horas manuales) con fallback JOptionPane ==========
@@ -421,6 +437,19 @@ public class Main {
         out.add(String.format("Decimal: %02d:%02d:%02d", hDec, mDec, sDec));
         out.add("====================================");
         writeLines(screen, tg, promptRow + 4, out);
+
+        // Mostrar resultado también en un dialog para asegurar visibilidad
+        StringBuilder popup = new StringBuilder();
+        popup.append("Resultado final:\n");
+        popup.append(String.format("Binario: %s:%s:%s\n", resultado.hora, resultado.minuto, resultado.segundo));
+        popup.append(String.format("Decimal: %02d:%02d:%02d\n", hDec, mDec, sDec));
+        JOptionPane.showMessageDialog(null, popup.toString(), "Resultado", JOptionPane.INFORMATION_MESSAGE);
+
+        int sel = JOptionPane.showConfirmDialog(null, "¿Deseas salir del programa? (Sí = salir, No = volver al menú)", "Salir?", JOptionPane.YES_NO_OPTION);
+        if (sel == JOptionPane.YES_OPTION) {
+            try { screen.stopScreen(); } catch (IOException ignored) {}
+            System.exit(0);
+        }
     }
 
     public static void main(String[] args) throws IOException {
